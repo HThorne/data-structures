@@ -1,5 +1,5 @@
 """Functions to parse a file containing villager data."""
-
+villagers = 'villagers.csv'
 
 def all_species(filename):
     """Return a set of unique species in the given file.
@@ -11,14 +11,24 @@ def all_species(filename):
         - set[str]: a set of strings
     """
 
-    species = set()
+    unique_species = set()
 
-    # TODO: replace this with your code
+    villager_info = open(filename)
 
-    return species
+    for line in villager_info:
+        line = line.rstrip().split("|")
+        species = line[1]
+
+        unique_species.add(species)
+    
+    villager_info.close()
+
+    return unique_species
 
 
-def get_villagers_by_species(filename, search_string="All"):
+
+
+def get_villagers_by_species(filename, search_species ="All"):
     """Return a list of villagers' names by species.
 
     Arguments:
@@ -28,12 +38,21 @@ def get_villagers_by_species(filename, search_string="All"):
     Return:
         - list[str]: a list of names
     """
+    villager_list = []
 
-    villagers = []
+    villager_info = open(filename)
 
-    # TODO: replace this with your code
+    for line in villager_info:
+        line = line.rstrip().split("|")
+        villager_name = line[0]
+        species = line[1]
 
-    return sorted(villagers)
+        if search_species == species or search_species == "All":
+            villager_list.append(villager_name)  
+
+    villager_info.close()
+
+    return sorted(villager_list)
 
 
 def all_names_by_hobby(filename):
@@ -46,9 +65,42 @@ def all_names_by_hobby(filename):
         - list[list[str]]: a list of lists containing names
     """
 
-    # TODO: replace this with your code
+    fitness = []
+    nature = []
+    education = []
+    music = []
+    fashion = []
+    play = []
 
-    return []
+    villager_info = open(filename)
+
+    for line in villager_info:
+        line = line.rstrip().split("|")
+        villager_name = line[0]
+        hobby = line[3]
+
+        if hobby == "Fitness":
+            fitness.append(villager_name)
+        elif hobby == "Nature":
+            nature.append(villager_name)
+        elif hobby == "Education":
+            education.append(villager_name)
+        elif hobby == "Music":
+            music.append(villager_name)
+        elif hobby == "Fashion":
+            fashion.append(villager_name)
+        elif hobby == "Play":
+            play.append(villager_name)
+
+    villager_info.close()
+
+    return [sorted(fitness),
+            sorted(nature),
+            sorted(education),
+            sorted(music),
+            sorted(fashion),
+            sorted(play)
+    ]
 
 
 def all_data(filename):
@@ -66,8 +118,14 @@ def all_data(filename):
 
     all_data = []
 
-    # TODO: replace this with your code
+    villager_info = open(filename)
 
+    for line in villager_info:
+        line = tuple(line.rstrip().split("|"))
+        all_data.append(line)
+    
+    villager_info.close()
+    
     return all_data
 
 
@@ -85,7 +143,16 @@ def find_motto(filename, villager_name):
         - str: the villager's motto or None
     """
 
-    # TODO: replace this with your code
+    villager_info = open(filename)
+
+    for line in villager_info:
+        line = line.rstrip().split("|")
+        villager_motto = line[4]
+        name = line[0]
+
+        if villager_name == name:
+            return villager_motto  
+
 
 
 def find_likeminded_villagers(filename, villager_name):
@@ -103,4 +170,37 @@ def find_likeminded_villagers(filename, villager_name):
         {'Bella', ..., 'Carmen'}
     """
 
-    # TODO: replace this with your code
+    villager_info = open(filename)
+
+    likeminded = set()
+   
+    expected_personality = None
+    
+    for line in villager_info:
+        line = line.rstrip().split("|")
+        villager_personality = line[2]
+        name = line[0]
+
+        if villager_name == name:
+            expected_personality = villager_personality
+            break
+    
+    if expected_personality:
+        for line in villager_info:
+            line = line.rstrip().split("|")
+            villager_personality = line[2]
+            name = line[0]
+
+            if villager_personality == expected_personality:
+                likeminded.add(name)
+
+            
+    return likeminded
+
+
+# print(all_species(villagers))
+# print(get_villagers_by_species(villagers, "Bear"))
+# print(all_names_by_hobby(villagers))
+# print(all_data(villagers))
+# print(find_motto(villagers, "Maple"))
+print(find_likeminded_villagers(villagers, "Maple"))
